@@ -274,7 +274,7 @@
             box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
         }
 
-        /* Responsive Design */
+        /* Remove old mobile responsive styles */
         @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -286,188 +286,68 @@
             }
         }
 
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            .header {
-                padding: 20px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .form-section,
-            .preview-section {
-                padding: 20px;
-            }
-            
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .item-row {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            
-            .invoice-parties {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-            
-            .invoice-header {
-                flex-direction: column;
-                gap: 15px;
-                margin-bottom: 25px;
-                padding-bottom: 15px;
-            }
-            
-            .invoice-title {
-                font-size: 1.8rem;
-            }
-            
-            .invoice-preview {
-                padding: 15px;
-                font-size: 0.9rem;
-            }
-            
-            .party-info h3 {
-                font-size: 1rem;
-                margin-bottom: 8px;
-            }
-            
-            .party-info p {
-                font-size: 0.85rem;
-                margin-bottom: 4px;
-                line-height: 1.3;
-            }
-            
-            .invoice-table {
-                font-size: 0.8rem;
-            }
-            
-            .invoice-table th,
-            .invoice-table td {
-                padding: 8px 6px;
-            }
-            
-            .invoice-totals {
-                width: 100%;
-                font-size: 0.85rem;
-            }
-            
-            .total-row {
-                padding: 6px 0;
-            }
-            
-            .total-row:last-child {
-                font-size: 1rem;
-                padding: 8px 0;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .invoice-title {
-                font-size: 1.5rem;
-            }
-            
+        /* Small mobile optimizations for single page PDF */
+        @media (max-width: 360px) {
             .invoice-preview {
                 padding: 12px;
-                font-size: 0.8rem;
+                font-size: 11px;
             }
-            
+
+            .invoice-title {
+                font-size: 16px;
+            }
+
             .invoice-header {
-                margin-bottom: 20px;
-                padding-bottom: 12px;
+                margin-bottom: 12px;
+                padding-bottom: 6px;
             }
-            
+
             .invoice-parties {
                 gap: 12px;
-                margin-bottom: 25px;
+                margin-bottom: 12px;
             }
-            
+
             .party-info h3 {
-                font-size: 0.9rem;
-                margin-bottom: 6px;
+                font-size: 13px;
+                margin-bottom: 4px;
             }
-            
+
             .party-info p {
-                font-size: 0.75rem;
-                margin-bottom: 3px;
-                line-height: 1.2;
+                font-size: 11px;
+                margin-bottom: 1px;
+                line-height: 1.3;
             }
-            
+
             .invoice-table {
-                font-size: 0.7rem;
-                margin-bottom: 20px;
+                font-size: 10px;
+                margin-bottom: 10px;
             }
-            
+
             .invoice-table th,
             .invoice-table td {
-                padding: 6px 4px;
+                padding: 4px 2px;
             }
-            
+
             .invoice-table th {
-                font-size: 0.65rem;
+                font-size: 10px;
             }
-            
+
             .invoice-totals {
-                font-size: 0.75rem;
-                width: 100%;
+                font-size: 11px;
             }
-            
+
             .total-row {
+                padding: 2px 0;
+            }
+
+            .total-row:last-child {
+                font-size: 13px;
                 padding: 4px 0;
             }
-            
-            .total-row:last-child {
-                font-size: 0.9rem;
-                padding: 6px 0;
-            }
-            
-            .invoice-number p {
-                font-size: 0.75rem;
-                margin-bottom: 3px;
-            }
-        }
 
-        /* Extra small screens */
-        @media (max-width: 360px) {
-            .invoice-title {
-                font-size: 1.3rem;
-            }
-            
-            .invoice-preview {
-                padding: 10px;
-                font-size: 0.75rem;
-            }
-            
-            .party-info h3 {
-                font-size: 0.85rem;
-            }
-            
-            .party-info p {
-                font-size: 0.7rem;
-            }
-            
-            .invoice-table {
-                font-size: 0.65rem;
-            }
-            
-            .invoice-table th,
-            .invoice-table td {
-                padding: 4px 3px;
-            }
-            
-            .invoice-totals {
-                font-size: 0.7rem;
-            }
-            
-            .total-row:last-child {
-                font-size: 0.85rem;
+            .invoice-number p {
+                font-size: 10px;
+                margin-bottom: 1px;
             }
         }
     </style>
