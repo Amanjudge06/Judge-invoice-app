@@ -7,385 +7,537 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        /* Mobile-First CSS Reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* Mobile-First Base Styles */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background: #f8f9fa;
             min-height: 100vh;
-            padding: 20px;
+            padding: 1rem;
+            line-height: 1.5;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 100%;
             margin: 0 auto;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-radius: 0.75rem;
+            box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.08);
             overflow: hidden;
         }
 
+        /* Header - Mobile First */
         .header {
             background: #2c3e50;
             color: white;
-            padding: 30px;
+            padding: 1.5rem 1rem;
             text-align: center;
         }
 
         .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
         }
 
         .header p {
-            font-size: 1.1rem;
+            font-size: 0.9rem;
             opacity: 0.9;
+            font-weight: 300;
         }
 
+        /* Main Content - Stacked on Mobile */
         .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0;
-            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            min-height: 70vh;
         }
 
+        /* Form Section - Mobile First */
         .form-section {
-            padding: 40px;
-            background: #f8f9fa;
-            border-right: 1px solid #e9ecef;
+            padding: 1.5rem;
+            background: #fafbfc;
+            order: 1;
         }
 
         .preview-section {
-            padding: 40px;
+            padding: 1.5rem;
             background: white;
-            position: relative;
+            order: 2;
         }
 
+        /* Form Styling - Mobile First */
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 1.25rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 0.5rem;
             font-weight: 600;
             color: #2c3e50;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
         .form-group input,
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
+            padding: 0.875rem;
+            border: 0.125rem solid #e9ecef;
+            border-radius: 0.5rem;
             font-size: 1rem;
             transition: all 0.3s ease;
             background: white;
+            min-height: 2.75rem; /* Touch-friendly minimum */
         }
 
         .form-group input:focus,
         .form-group textarea:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #2c3e50;
-            box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.1875rem rgba(52, 152, 219, 0.1);
         }
 
         .form-group textarea {
             resize: vertical;
-            min-height: 80px;
+            min-height: 5rem;
         }
 
+        /* Form Row - Stacked on Mobile */
         .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
 
         .section-title {
-            font-size: 1.3rem;
+            font-size: 1.125rem;
             color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #2c3e50;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 0.1875rem solid #3498db;
+            font-weight: 600;
         }
 
+        /* Items Section - Mobile First */
         .items-section {
-            margin-top: 30px;
+            margin-top: 1.5rem;
         }
 
         .item-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr auto;
-            gap: 10px;
-            align-items: end;
-            margin-bottom: 15px;
-            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-radius: 0.5rem;
+            box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,0.05);
+            position: relative;
         }
 
-        .add-item-btn,
         .remove-item-btn {
-            padding: 12px 20px;
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #e74c3c;
+            color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            font-size: 1rem;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .add-item-btn {
-            background: #2c3e50;
+            background: #3498db;
             color: white;
+            border: none;
+            padding: 0.875rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
             width: 100%;
-            margin-top: 15px;
+            margin-top: 1rem;
+            min-height: 2.75rem; /* Touch-friendly */
+            transition: all 0.3s ease;
         }
 
         .add-item-btn:hover {
-            background: #34495e;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(44, 62, 80, 0.3);
+            background: #2980b9;
+            transform: translateY(-0.0625rem);
         }
 
-        .remove-item-btn {
-            background: #e74c3c;
-            color: white;
-            padding: 8px 12px;
-            font-size: 0.9rem;
-        }
-
-        .remove-item-btn:hover {
-            background: #c0392b;
-        }
-
+        /* Invoice Preview - Mobile First */
         .invoice-preview {
             background: white;
-            border: 1px solid #e9ecef;
-            border-radius: 10px;
-            padding: 40px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            border: 0.0625rem solid #e9ecef;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,0.05);
+            margin-bottom: 1rem;
+            font-size: 0.75rem;
+            line-height: 1.4;
         }
 
         .invoice-header {
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 3px solid #667eea;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 0.125rem solid #3498db;
         }
 
         .invoice-title {
-            font-size: 2.5rem;
+            font-size: 1.25rem;
             color: #2c3e50;
             font-weight: 700;
+            text-align: center;
         }
 
         .invoice-number {
-            text-align: right;
+            text-align: center;
             color: #7f8c8d;
+            font-size: 0.75rem;
+        }
+
+        .invoice-number p {
+            margin-bottom: 0.25rem;
         }
 
         .invoice-parties {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1rem;
         }
 
         .party-info h3 {
             color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
         }
 
         .party-info p {
-            margin-bottom: 5px;
+            margin-bottom: 0.125rem;
             color: #555;
-            line-height: 1.5;
+            line-height: 1.4;
+            font-size: 0.75rem;
+        }
+
+        /* Table - Mobile Responsive */
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 1rem;
         }
 
         .invoice-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 30px;
+            min-width: 20rem; /* Minimum width for readability */
+            font-size: 0.75rem;
         }
 
         .invoice-table th {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            background: #2c3e50;
             color: white;
-            padding: 15px;
+            padding: 0.5rem 0.25rem;
             text-align: left;
             font-weight: 600;
+            font-size: 0.7rem;
         }
 
         .invoice-table td {
-            padding: 15px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .invoice-table tr:hover {
-            background: #f8f9fa;
+            padding: 0.5rem 0.25rem;
+            border-bottom: 0.0625rem solid #e9ecef;
+            font-size: 0.7rem;
         }
 
         .invoice-totals {
-            margin-left: auto;
-            width: 300px;
+            width: 100%;
+            font-size: 0.75rem;
         }
 
         .total-row {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #e9ecef;
+            padding: 0.25rem 0;
+            border-bottom: 0.0625rem solid #e9ecef;
         }
 
         .total-row:last-child {
-            border-bottom: 3px solid #667eea;
+            border-bottom: 0.125rem solid #3498db;
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 0.875rem;
             color: #2c3e50;
+            padding: 0.5rem 0;
         }
 
+        /* Download Button - Touch Friendly */
         .download-btn {
             background: #2c3e50;
             color: white;
             border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 1.1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
+            min-height: 3rem; /* Touch-friendly */
             transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.03125rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
         .download-btn:hover {
-            background: #2ecc71;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+            background: #34495e;
+            transform: translateY(-0.125rem);
         }
 
-        /* Remove old mobile responsive styles */
-        @media (max-width: 1024px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-            
-            .form-section {
-                border-right: none;
-                border-bottom: 1px solid #e9ecef;
-            }
-        }
-
-        /* Additional mobile responsive styles for form section */
-        @media (max-width: 768px) {
+        /* Tablet Styles (min-width: 768px) */
+        @media (min-width: 48rem) {
             body {
-                padding: 10px;
-            }
-            
-            .header {
-                padding: 20px;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .form-section,
-            .preview-section {
-                padding: 20px;
-            }
-            
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .item-row {
-                grid-template-columns: 1fr;
-                gap: 10px;
+                padding: 1.5rem;
             }
 
-            .invoice-parties {
-                grid-template-columns: 1fr;
+            .container {
+                max-width: 87.5rem;
+            }
+
+            .header {
+                padding: 2rem;
+            }
+
+            .header h1 {
+                font-size: 2.25rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .main-content {
+                flex-direction: row;
+            }
+
+            .form-section {
+                flex: 1;
+                padding: 2.5rem;
+                border-right: 0.0625rem solid #e9ecef;
+                order: 1;
+            }
+
+            .preview-section {
+                flex: 1;
+                padding: 2.5rem;
+                order: 2;
+            }
+
+            .form-row {
+                flex-direction: row;
+                gap: 1rem;
+            }
+
+            .form-row .form-group {
+                flex: 1;
+            }
+
+            .item-row {
+                flex-direction: row;
+                align-items: end;
+                gap: 0.75rem;
+            }
+
+            .item-row .form-group:nth-child(1) {
+                flex: 2;
+            }
+
+            .item-row .form-group:nth-child(2),
+            .item-row .form-group:nth-child(3),
+            .item-row .form-group:nth-child(4) {
+                flex: 1;
+            }
+
+            .remove-item-btn {
+                position: static;
+                margin-top: 1.875rem;
+                border-radius: 0.375rem;
+                width: auto;
+                height: auto;
+                padding: 0.5rem 0.75rem;
+            }
+
+            .invoice-preview {
+                padding: 1.5rem;
+                font-size: 0.875rem;
             }
 
             .invoice-header {
-                flex-direction: column;
-                gap: 10px;
-            }
-        }
-        @media (max-width: 360px) {
-            .invoice-preview {
-                padding: 12px;
-                font-size: 11px;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
             }
 
             .invoice-title {
-                font-size: 16px;
+                font-size: 1.75rem;
+                text-align: left;
             }
 
-            .invoice-header {
-                margin-bottom: 12px;
-                padding-bottom: 6px;
+            .invoice-number {
+                text-align: right;
+                font-size: 0.875rem;
             }
 
             .invoice-parties {
-                gap: 12px;
-                margin-bottom: 12px;
+                flex-direction: row;
+                gap: 2rem;
+                margin-bottom: 1.5rem;
             }
 
             .party-info h3 {
-                font-size: 13px;
-                margin-bottom: 4px;
+                font-size: 1rem;
             }
 
             .party-info p {
-                font-size: 11px;
-                margin-bottom: 1px;
-                line-height: 1.3;
+                font-size: 0.875rem;
             }
 
             .invoice-table {
-                font-size: 10px;
-                margin-bottom: 10px;
+                font-size: 0.875rem;
+            }
+
+            .invoice-table th {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            .invoice-table td {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            .invoice-totals {
+                width: 18.75rem;
+                margin-left: auto;
+                font-size: 0.875rem;
+            }
+
+            .total-row:last-child {
+                font-size: 1rem;
+            }
+        }
+
+        /* Desktop Styles (min-width: 1024px) */
+        @media (min-width: 64rem) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .header p {
+                font-size: 1.1rem;
+            }
+
+            .form-section,
+            .preview-section {
+                padding: 3rem;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+            }
+
+            .invoice-preview {
+                padding: 2.5rem;
+                font-size: 1rem;
+            }
+
+            .invoice-title {
+                font-size: 2rem;
+            }
+
+            .invoice-number {
+                font-size: 1rem;
+            }
+
+            .party-info h3 {
+                font-size: 1.125rem;
+            }
+
+            .party-info p {
+                font-size: 1rem;
+            }
+
+            .invoice-table {
+                font-size: 1rem;
             }
 
             .invoice-table th,
             .invoice-table td {
-                padding: 4px 2px;
-            }
-
-            .invoice-table th {
-                font-size: 10px;
+                padding: 1rem 0.75rem;
+                font-size: 1rem;
             }
 
             .invoice-totals {
-                font-size: 11px;
-            }
-
-            .total-row {
-                padding: 2px 0;
+                font-size: 1rem;
             }
 
             .total-row:last-child {
-                font-size: 13px;
-                padding: 4px 0;
+                font-size: 1.125rem;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
             }
 
-            .invoice-number p {
-                font-size: 10px;
-                margin-bottom: 1px;
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            .header,
+            .form-section,
+            .download-btn {
+                display: none;
+            }
+
+            .main-content {
+                flex-direction: column;
+            }
+
+            .preview-section {
+                padding: 0;
+            }
+
+            .invoice-preview {
+                border: none;
+                box-shadow: none;
+                padding: 0;
             }
         }
     </style>
@@ -498,8 +650,6 @@
                             <option value="сом">KGS (сом) - Kyrgyzstani Som</option>
                             <option value="сом">UZS (сом) - Uzbekistani Som</option>
                             <option value="₼">TMT (₼) - Turkmenistani Manat</option>
-                            <option value="դր.">AMD (դր.) - Armenian Dram</option>
-                            <option value="₡">CRC (₡) - Costa Rican Colon</option>
                             <option value="$">ARS ($) - Argentine Peso</option>
                             <option value="$">CLP ($) - Chilean Peso</option>
                             <option value="$">COP ($) - Colombian Peso</option>
@@ -550,7 +700,7 @@
                     <button type="button" class="add-item-btn" onclick="addItem()">+ Add Item</button>
                 </div>
 
-                <div class="form-row" style="margin-top: 30px;">
+                <div class="form-row" style="margin-top: 1.5rem;">
                     <div class="form-group">
                         <label for="taxRate">Tax Rate (%)</label>
                         <input type="number" id="taxRate" step="0.01" value="0" min="0">
@@ -591,24 +741,26 @@
                         </div>
                     </div>
                     
-                    <table class="invoice-table">
-                        <thead>
-                            <tr>
-                                <th>Description</th>
-                                <th>Qty</th>
-                                <th>Rate</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody id="previewItemsTable">
-                            <tr>
-                                <td>Sample Product/Service</td>
-                                <td>1</td>
-                                <td>$100.00</td>
-                                <td>$100.00</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-container">
+                        <table class="invoice-table">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Qty</th>
+                                    <th>Rate</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="previewItemsTable">
+                                <tr>
+                                    <td>Sample Product/Service</td>
+                                    <td>1</td>
+                                    <td>$100.00</td>
+                                    <td>$100.00</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     
                     <div class="invoice-totals">
                         <div class="total-row">
