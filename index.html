@@ -258,6 +258,8 @@
             font-size: 0.9rem;
             line-height: 1.6;
             width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .invoice-header {
@@ -462,16 +464,25 @@
             }
         }
 
-        /* Print Styles */
+        /* PDF-specific styles */
+        @media all {
+            .page-break {
+                display: none;
+            }
+        }
+
         @media print {
             body {
                 background: white;
                 padding: 0;
+                margin: 0;
             }
             
             .container {
                 box-shadow: none;
                 border-radius: 0;
+                width: 100%;
+                max-width: 100%;
             }
             
             .header,
@@ -482,6 +493,8 @@
             
             .main-content {
                 flex-direction: column;
+                padding: 0;
+                gap: 0;
             }
             
             .preview-section {
@@ -492,10 +505,55 @@
             .invoice-preview {
                 border: none;
                 box-shadow: none;
-                padding: 0;
+                padding: 1cm;
                 margin: 0;
                 width: 100%;
                 max-width: 100%;
+                font-size: 12pt;
+            }
+            
+            .invoice-header {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+            
+            .invoice-title {
+                text-align: left;
+                font-size: 24pt;
+            }
+            
+            .invoice-number {
+                text-align: right;
+                font-size: 11pt;
+            }
+            
+            .invoice-parties {
+                flex-direction: row;
+                gap: 2rem;
+            }
+            
+            .party-info {
+                flex: 1;
+            }
+            
+            .invoice-table {
+                min-width: 100%;
+                font-size: 10pt;
+            }
+            
+            .invoice-table th,
+            .invoice-table td {
+                padding: 8px;
+                font-size: 10pt;
+            }
+            
+            .invoice-totals {
+                max-width: 50%;
+            }
+            
+            .page-break {
+                display: block;
+                page-break-before: always;
             }
         }
     </style>
@@ -939,35 +997,51 @@
             const { jsPDF } = window.jspdf;
             const invoice = document.getElementById('invoicePreview');
             
+            // Create a clone for PDF processing
+            const clone = invoice.cloneNode(true);
+            clone.style.width = '210mm';
+            clone.style.maxWidth = '210mm';
+            clone.style.padding = '20px';
+            clone.style.fontSize = '12pt';
+            clone.style.boxSizing = 'border-box';
+            clone.style.visibility = 'hidden';
+            clone.style.position = 'absolute';
+            clone.style.left = '-9999px';
+            
+            document.body.appendChild(clone);
+            
             try {
-                const canvas = await html2canvas(invoice, {
+                const canvas = await html2canvas(clone, {
                     scale: 2,
                     useCORS: true,
                     allowTaint: false,
-                    backgroundColor: '#ffffff'
+                    backgroundColor: '#ffffff',
+                    logging: false
                 });
+                
+                document.body.removeChild(clone);
                 
                 const imgData = canvas.toDataURL('image/png');
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const pageWidth = pdf.internal.pageSize.getWidth();
                 const pageHeight = pdf.internal.pageSize.getHeight();
                 
-                // Calculate aspect ratio of the captured image
+                // Calculate aspect ratio
                 const imgWidth = canvas.width;
                 const imgHeight = canvas.height;
                 const ratio = imgWidth / imgHeight;
                 
-                // Calculate dimensions to fit within the A4 page
-                let pdfWidth = pageWidth;
-                let pdfHeight = pageWidth / ratio;
+                // Calculate dimensions to fit the page
+                let pdfWidth = pageWidth - 20; // 20mm margins
+                let pdfHeight = pdfWidth / ratio;
                 
-                // If the calculated height is greater than page height
-                if (pdfHeight > pageHeight) {
-                    pdfHeight = pageHeight;
-                    pdfWidth = pageHeight * ratio;
+                // If content is too tall, reduce width to maintain ratio
+                if (pdfHeight > pageHeight - 20) {
+                    pdfHeight = pageHeight - 20;
+                    pdfWidth = pdfHeight * ratio;
                 }
                 
-                // Center the content on the page
+                // Center content on page
                 const x = (pageWidth - pdfWidth) / 2;
                 const y = (pageHeight - pdfHeight) / 2;
                 
