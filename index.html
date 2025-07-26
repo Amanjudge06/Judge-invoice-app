@@ -6,508 +6,482 @@
     <title>Invoice Maker Pro</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Mobile-First CSS Reset */
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #f8f9fa;
+            --dark: #34495e;
+            --success: #27ae60;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Mobile-First Base Styles */
         body {
-            font-family: 'Arial', 'Helvetica', sans-serif;
-            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
-            padding: 1rem;
-            line-height: 1.5;
-            overflow-x: hidden;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
         }
 
         .container {
             max-width: 100%;
             margin: 0 auto;
             background: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 0.5rem 1.5rem rgba(0,0,0,0.08);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             overflow: hidden;
         }
 
-        /* Header - Mobile First */
         .header {
-            background: #2c3e50;
+            background: linear-gradient(to right, var(--primary), #1a2530);
             color: white;
-            padding: 1.5rem 1rem;
+            padding: 1.5rem;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
         }
 
         .header h1 {
-            font-size: 1.5rem;
+            font-size: 2.2rem;
             margin-bottom: 0.5rem;
             font-weight: 700;
+            position: relative;
         }
 
         .header p {
-            font-size: 0.85rem;
+            font-size: 1.1rem;
             opacity: 0.9;
             font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
         }
 
-        /* Main Content - Stacked on Mobile */
         .main-content {
             display: flex;
             flex-direction: column;
-            min-height: 70vh;
         }
 
-        /* Form Section - Mobile First */
+        .form-section, .preview-section {
+            padding: 1.5rem;
+        }
+
         .form-section {
-            padding: 1.25rem;
             background: #fafbfc;
-            order: 1;
         }
 
-        .preview-section {
-            padding: 1.25rem;
-            background: white;
-            order: 2;
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin: 1.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--secondary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        /* Form Styling - Mobile First */
+        .section-title i {
+            color: var(--secondary);
+        }
+
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.5rem;
             font-weight: 600;
-            color: #2c3e50;
-            font-size: 0.85rem;
+            color: var(--primary);
+            font-size: 0.95rem;
         }
 
         .form-group input,
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 0.75rem;
-            border: 0.125rem solid #e9ecef;
-            border-radius: 0.5rem;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
             background: white;
-            min-height: 2.75rem; /* Touch-friendly minimum */
         }
 
         .form-group input:focus,
         .form-group textarea:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 0.1875rem rgba(52, 152, 219, 0.1);
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
         }
 
         .form-group textarea {
             resize: vertical;
-            min-height: 5rem;
+            min-height: 100px;
         }
 
-        /* Form Row - Stacked on Mobile */
         .form-row {
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
+            gap: 1rem;
         }
 
-        .section-title {
-            font-size: 1.05rem;
-            color: #2c3e50;
-            margin-bottom: 0.8rem;
-            padding-bottom: 0.4rem;
-            border-bottom: 0.15rem solid #3498db;
-            font-weight: 600;
-        }
-
-        /* Items Section - Mobile First */
         .items-section {
-            margin-top: 1.25rem;
+            margin-top: 1.5rem;
         }
 
         .item-row {
             display: flex;
             flex-direction: column;
-            gap: 0.6rem;
+            gap: 0.75rem;
             margin-bottom: 1rem;
-            padding: 0.9rem;
+            padding: 1.25rem;
             background: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,0.05);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
             position: relative;
+            border: 1px solid #eaeaea;
         }
 
         .remove-item-btn {
             position: absolute;
-            top: 0.4rem;
-            right: 0.4rem;
-            background: #e74c3c;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
             color: white;
             border: none;
-            border-radius: 0.3rem;
-            width: 1.8rem;
-            height: 1.8rem;
-            font-size: 1rem;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 1.1rem;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 10;
+            transition: var(--transition);
+        }
+
+        .remove-item-btn:hover {
+            background: #c0392b;
+            transform: scale(1.1);
         }
 
         .add-item-btn {
-            background: #3498db;
+            background: var(--success);
             color: white;
             border: none;
-            padding: 0.8rem;
-            border-radius: 0.5rem;
-            font-size: 0.9rem;
+            padding: 0.875rem;
+            border-radius: 8px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            margin-top: 0.8rem;
-            min-height: 2.75rem; /* Touch-friendly */
-            transition: all 0.3s ease;
+            margin-top: 1rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .add-item-btn:hover {
-            background: #2980b9;
-            transform: translateY(-0.0625rem);
+            background: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
         }
 
-        /* Invoice Preview - Mobile First */
         .invoice-preview {
             background: white;
-            border: 0.0625rem solid #e9ecef;
-            border-radius: 0.5rem;
-            padding: 0.9rem;
-            box-shadow: 0 0.125rem 0.5rem rgba(0,0,0,0.05);
-            margin-bottom: 1rem;
-            font-size: 0.7rem;
-            line-height: 1.4;
-            overflow: hidden;
+            border: 1px solid #e9ecef;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .invoice-header {
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
-            margin-bottom: 0.8rem;
-            padding-bottom: 0.6rem;
-            border-bottom: 0.1rem solid #3498db;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--secondary);
         }
 
         .invoice-title {
-            font-size: 1.15rem;
-            color: #2c3e50;
+            font-size: 1.8rem;
+            color: var(--primary);
             font-weight: 700;
             text-align: center;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .invoice-number {
             text-align: center;
             color: #7f8c8d;
-            font-size: 0.7rem;
+            font-size: 0.95rem;
         }
 
         .invoice-number p {
-            margin-bottom: 0.2rem;
+            margin-bottom: 0.25rem;
         }
 
         .invoice-parties {
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
-            margin-bottom: 0.8rem;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .party-info h3 {
-            color: #2c3e50;
-            margin-bottom: 0.4rem;
-            font-size: 0.8rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .party-info h3 i {
+            color: var(--secondary);
         }
 
         .party-info p {
-            margin-bottom: 0.1rem;
+            margin-bottom: 0.25rem;
             color: #555;
-            line-height: 1.4;
-            font-size: 0.7rem;
+            line-height: 1.5;
         }
 
-        /* Table - Mobile Responsive */
         .table-container {
             overflow-x: auto;
-            margin-bottom: 0.8rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid #eaeaea;
         }
 
         .invoice-table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 20rem; /* Minimum width for readability */
-            font-size: 0.7rem;
+            min-width: 600px;
         }
 
         .invoice-table th {
-            background: #2c3e50;
+            background: var(--primary);
             color: white;
-            padding: 0.4rem 0.2rem;
+            padding: 0.75rem;
             text-align: left;
             font-weight: 600;
-            font-size: 0.65rem;
         }
 
         .invoice-table td {
-            padding: 0.4rem 0.2rem;
-            border-bottom: 0.0625rem solid #e9ecef;
-            font-size: 0.65rem;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .invoice-table tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
 
         .invoice-totals {
             width: 100%;
-            font-size: 0.7rem;
+            font-size: 1rem;
+            max-width: 400px;
+            margin-left: auto;
         }
 
         .total-row {
             display: flex;
             justify-content: space-between;
-            padding: 0.2rem 0;
-            border-bottom: 0.0625rem solid #e9ecef;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e9ecef;
         }
 
         .total-row:last-child {
-            border-bottom: 0.1rem solid #3498db;
+            border-bottom: 2px solid var(--secondary);
             font-weight: 700;
-            font-size: 0.8rem;
-            color: #2c3e50;
-            padding: 0.4rem 0;
+            font-size: 1.1rem;
+            color: var(--primary);
         }
 
-        /* Download Button - Touch Friendly */
         .download-btn {
-            background: #2c3e50;
+            background: linear-gradient(to right, var(--primary), var(--dark));
             color: white;
             border: none;
-            padding: 0.9rem;
-            border-radius: 0.5rem;
-            font-size: 0.9rem;
+            padding: 1.1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             width: 100%;
-            min-height: 3rem; /* Touch-friendly */
-            transition: all 0.3s ease;
+            max-width: 800px;
+            margin: 20px auto;
+            display: block;
+            transition: var(--transition);
             text-transform: uppercase;
-            letter-spacing: 0.03125rem;
+            letter-spacing: 0.5px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.4rem;
+            gap: 10px;
+            box-shadow: 0 4px 10px rgba(44, 62, 80, 0.3);
         }
 
         .download-btn:hover {
-            background: #34495e;
-            transform: translateY(-0.125rem);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(44, 62, 80, 0.4);
         }
 
-        /* Tablet Styles (min-width: 768px) */
-        @media (min-width: 48rem) {
-            body {
-                padding: 1.5rem;
-            }
-
-            .container {
-                max-width: 87.5rem;
-            }
-
-            .header {
-                padding: 2rem;
-            }
-
+        /* Mobile-specific improvements */
+        @media (max-width: 767px) {
             .header h1 {
-                font-size: 2.25rem;
+                font-size: 1.8rem;
             }
-
+            
             .header p {
                 font-size: 1rem;
             }
+            
+            .section-title {
+                font-size: 1.2rem;
+            }
+            
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 0.75rem;
+                font-size: 0.95rem;
+            }
+            
+            .item-row {
+                padding: 1rem;
+            }
+            
+            .invoice-title {
+                font-size: 1.5rem;
+            }
+            
+            .invoice-table th,
+            .invoice-table td {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+            
+            .total-row {
+                padding: 0.6rem;
+                font-size: 0.95rem;
+            }
+            
+            .total-row:last-child {
+                font-size: 1.05rem;
+            }
+            
+            .download-btn {
+                padding: 1rem;
+                font-size: 1rem;
+            }
+        }
 
+        /* Tablet and Desktop Styles */
+        @media (min-width: 768px) {
             .main-content {
                 flex-direction: row;
             }
-
+            
             .form-section {
                 flex: 1;
-                padding: 2.5rem;
-                border-right: 0.0625rem solid #e9ecef;
-                order: 1;
+                border-right: 1px solid #e9ecef;
             }
-
+            
             .preview-section {
                 flex: 1;
-                padding: 2.5rem;
-                order: 2;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
-
+            
             .form-row {
                 flex-direction: row;
                 gap: 1rem;
             }
-
+            
             .form-row .form-group {
                 flex: 1;
             }
-
+            
             .item-row {
                 flex-direction: row;
-                align-items: end;
-                gap: 0.75rem;
+                align-items: flex-end;
+                gap: 1rem;
             }
-
-            .item-row .form-group:nth-child(1) {
-                flex: 2;
-            }
-
-            .item-row .form-group:nth-child(2),
-            .item-row .form-group:nth-child(3),
-            .item-row .form-group:nth-child(4) {
+            
+            .item-row .form-group {
                 flex: 1;
+                margin-bottom: 0;
             }
-
+            
             .remove-item-btn {
                 position: static;
-                margin-top: 1.875rem;
-                border-radius: 0.375rem;
-                width: auto;
-                height: auto;
-                padding: 0.5rem 0.75rem;
+                margin-top: 0;
+                width: 40px;
+                height: 40px;
+                flex-shrink: 0;
             }
-
-            .invoice-preview {
-                padding: 1.5rem;
-                font-size: 0.875rem;
-            }
-
+            
             .invoice-header {
                 flex-direction: row;
                 justify-content: space-between;
                 align-items: flex-start;
-                margin-bottom: 1.5rem;
-                padding-bottom: 1rem;
             }
-
+            
             .invoice-title {
-                font-size: 1.75rem;
                 text-align: left;
             }
-
+            
             .invoice-number {
                 text-align: right;
-                font-size: 0.875rem;
             }
-
+            
             .invoice-parties {
                 flex-direction: row;
                 gap: 2rem;
-                margin-bottom: 1.5rem;
             }
-
-            .party-info h3 {
-                font-size: 1rem;
-            }
-
-            .party-info p {
-                font-size: 0.875rem;
-            }
-
-            .invoice-table {
-                font-size: 0.875rem;
-            }
-
-            .invoice-table th {
-                padding: 0.75rem 0.5rem;
-                font-size: 0.875rem;
-            }
-
-            .invoice-table td {
-                padding: 0.75rem 0.5rem;
-                font-size: 0.875rem;
-            }
-
-            .invoice-totals {
-                width: 18.75rem;
-                margin-left: auto;
-                font-size: 0.875rem;
-            }
-
-            .total-row:last-child {
-                font-size: 1rem;
-            }
-        }
-
-        /* Desktop Styles (min-width: 1024px) */
-        @media (min-width: 64rem) {
-            .header h1 {
-                font-size: 2.5rem;
-            }
-
-            .header p {
-                font-size: 1.1rem;
-            }
-
-            .form-section,
-            .preview-section {
-                padding: 3rem;
-            }
-
-            .section-title {
-                font-size: 1.25rem;
-            }
-
-            .invoice-preview {
-                padding: 2.5rem;
-                font-size: 1rem;
-            }
-
-            .invoice-title {
-                font-size: 2rem;
-            }
-
-            .invoice-number {
-                font-size: 1rem;
-            }
-
-            .party-info h3 {
-                font-size: 1.125rem;
-            }
-
-            .party-info p {
-                font-size: 1rem;
-            }
-
-            .invoice-table {
-                font-size: 1rem;
-            }
-
-            .invoice-table th,
-            .invoice-table td {
-                padding: 1rem 0.75rem;
-                font-size: 1rem;
-            }
-
-            .invoice-totals {
-                font-size: 1rem;
-            }
-
-            .total-row:last-child {
-                font-size: 1.125rem;
+            
+            .party-info {
+                flex: 1;
             }
         }
 
@@ -517,84 +491,119 @@
                 background: white;
                 padding: 0;
             }
-
+            
             .container {
                 box-shadow: none;
                 border-radius: 0;
             }
-
+            
             .header,
             .form-section,
             .download-btn {
                 display: none;
             }
-
+            
             .main-content {
                 flex-direction: column;
             }
-
+            
             .preview-section {
                 padding: 0;
+                width: 100%;
             }
-
+            
             .invoice-preview {
                 border: none;
                 box-shadow: none;
                 padding: 0;
+                margin: 0;
+                width: 100%;
+                max-width: 100%;
             }
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .logo-icon {
+            background: var(--secondary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-file-invoice"></i>
+                </div>
+            </div>
             <h1>Invoice Maker Pro</h1>
             <p>Create professional invoices in seconds</p>
         </div>
         
         <div class="main-content">
             <div class="form-section">
-                <div class="section-title">Company Information</div>
+                <div class="section-title">
+                    <i class="fas fa-building"></i>
+                    Company Information
+                </div>
                 <div class="form-group">
-                    <label for="companyName">Company Name</label>
-                    <input type="text" id="companyName" placeholder="Your Company Name">
+                    <label for="companyName"><i class="fas fa-signature"></i> Company Name</label>
+                    <input type="text" id="companyName" placeholder="Your Company Name" value="Tech Solutions Inc.">
                 </div>
                 
                 <div class="form-group">
-                    <label for="companyAddress">Company Address</label>
-                    <textarea id="companyAddress" placeholder="123 Business Street&#10;City, State 12345&#10;Country"></textarea>
+                    <label for="companyAddress"><i class="fas fa-map-marker-alt"></i> Company Address</label>
+                    <textarea id="companyAddress" placeholder="123 Business Street&#10;City, State 12345&#10;Country">123 Innovation Drive&#10;San Francisco, CA 94103&#10;United States</textarea>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="companyPhone">Phone</label>
-                        <input type="tel" id="companyPhone" placeholder="+1 (555) 123-4567">
+                        <label for="companyPhone"><i class="fas fa-phone"></i> Phone</label>
+                        <input type="tel" id="companyPhone" placeholder="+1 (555) 123-4567" value="+1 (415) 555-0199">
                     </div>
                     <div class="form-group">
-                        <label for="companyEmail">Email</label>
-                        <input type="email" id="companyEmail" placeholder="contact@company.com">
+                        <label for="companyEmail"><i class="fas fa-envelope"></i> Email</label>
+                        <input type="email" id="companyEmail" placeholder="contact@company.com" value="info@techsolutions.com">
                     </div>
                 </div>
 
-                <div class="section-title">Invoice Details</div>
+                <div class="section-title">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    Invoice Details
+                </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="invoiceNumber">Invoice Number</label>
-                        <input type="text" id="invoiceNumber" placeholder="INV-001">
+                        <label for="invoiceNumber"><i class="fas fa-hashtag"></i> Invoice Number</label>
+                        <input type="text" id="invoiceNumber" placeholder="INV-001" value="INV-2023-087">
                     </div>
                     <div class="form-group">
-                        <label for="invoiceDate">Invoice Date</label>
+                        <label for="invoiceDate"><i class="fas fa-calendar-alt"></i> Invoice Date</label>
                         <input type="date" id="invoiceDate">
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="dueDate">Due Date</label>
+                        <label for="dueDate"><i class="fas fa-clock"></i> Due Date</label>
                         <input type="date" id="dueDate">
                     </div>
                     <div class="form-group">
-                        <label for="currency">Currency</label>
+                        <label for="currency"><i class="fas fa-money-bill-wave"></i> Currency</label>
                         <select id="currency">
                             <option value="$">USD ($) - United States Dollar</option>
                             <option value="€">EUR (€) - Euro</option>
@@ -602,115 +611,86 @@
                             <option value="¥">JPY (¥) - Japanese Yen</option>
                             <option value="₹">INR (₹) - Indian Rupee</option>
                             <option value="A$">AUD (A$) - Australian Dollar</option>
-                            <option value="C$">CAD (C$) - Canadian Dollar</option>
-                            <option value="¥">CNY (¥) - Chinese Yuan</option>
-                            <option value="CHF">CHF - Swiss Franc</option>
-                            <option value="kr">SEK (kr) - Swedish Krona</option>
-                            <option value="kr">NOK (kr) - Norwegian Krone</option>
-                            <option value="kr">DKK (kr) - Danish Krone</option>
-                            <option value="₽">RUB (₽) - Russian Ruble</option>
-                            <option value="R$">BRL (R$) - Brazilian Real</option>
-                            <option value="$">MXN ($) - Mexican Peso</option>
-                            <option value="₩">KRW (₩) - South Korean Won</option>
-                            <option value="S$">SGD (S$) - Singapore Dollar</option>
-                            <option value="HK$">HKD (HK$) - Hong Kong Dollar</option>
-                            <option value="NZ$">NZD (NZ$) - New Zealand Dollar</option>
-                            <option value="R">ZAR (R) - South African Rand</option>
-                            <option value="₦">NGN (₦) - Nigerian Naira</option>
-                            <option value="EGP">EGP - Egyptian Pound</option>
-                            <option value="₴">UAH (₴) - Ukrainian Hryvnia</option>
-                            <option value="zł">PLN (zł) - Polish Zloty</option>
-                            <option value="Kč">CZK (Kč) - Czech Koruna</option>
-                            <option value="Ft">HUF (Ft) - Hungarian Forint</option>
-                            <option value="lei">RON (lei) - Romanian Leu</option>
-                            <option value="лв">BGN (лв) - Bulgarian Lev</option>
-                            <option value="kn">HRK (kn) - Croatian Kuna</option>
-                            <option value="₺">TRY (₺) - Turkish Lira</option>
-                            <option value="﷼">SAR (﷼) - Saudi Riyal</option>
-                            <option value="د.إ">AED (د.إ) - UAE Dirham</option>
-                            <option value="₪">ILS (₪) - Israeli Shekel</option>
-                            <option value="RM">MYR (RM) - Malaysian Ringgit</option>
-                            <option value="₱">PHP (₱) - Philippine Peso</option>
-                            <option value="฿">THB (฿) - Thai Baht</option>
-                            <option value="Rp">IDR (Rp) - Indonesian Rupiah</option>
-                            <option value="₫">VND (₫) - Vietnamese Dong</option>
-                            <option value="₡">CRC (₡) - Costa Rican Colon</option>
-                            <option value="Q">GTQ (Q) - Guatemalan Quetzal</option>
-                            <option value="₨">LKR (₨) - Sri Lankan Rupee</option>
-                            <option value="₨">PKR (₨) - Pakistani Rupee</option>
-                            <option value="Tk">BDT (Tk) - Bangladeshi Taka</option>
-                            <option value="₨">NPR (₨) - Nepalese Rupee</option>
-                            <option value="₨">MVR (₨) - Maldivian Rufiyaa</option>
-                            <option value="Br">ETB (Br) - Ethiopian Birr</option>
-                            <option value="₵">GHS (₵) - Ghanaian Cedi</option>
-                            <option value="KSh">KES (KSh) - Kenyan Shilling</option>
-                            <option value="USh">UGX (USh) - Ugandan Shilling</option>
-                            <option value="TSh">TZS (TSh) - Tanzanian Shilling</option>
-                            <option value="₼">AZN (₼) - Azerbaijani Manat</option>
-                            <option value="₾">GEL (₾) - Georgian Lari</option>
-                            <option value="դր.">AMD (դր.) - Armenian Dram</option>
-                            <option value="₸">KZT (₸) - Kazakhstani Tenge</option>
-                            <option value="сом">KGS (сом) - Kyrgyzstani Som</option>
-                            <option value="сом">UZS (сом) - Uzbekistani Som</option>
-                            <option value="₼">TMT (₼) - Turkmenistani Manat</option>
-                            <option value="$">ARS ($) - Argentine Peso</option>
-                            <option value="$">CLP ($) - Chilean Peso</option>
-                            <option value="$">COP ($) - Colombian Peso</option>
-                            <option value="S/">PEN (S/) - Peruvian Sol</option>
-                            <option value="$U">UYU ($U) - Uruguayan Peso</option>
-                            <option value="Bs">VES (Bs) - Venezuelan Bolívar</option>
-                            <option value="$">BBD ($) - Barbadian Dollar</option>
-                            <option value="$">JMD ($) - Jamaican Dollar</option>
-                            <option value="$">TTD ($) - Trinidad & Tobago Dollar</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="section-title">Client Information</div>
+                <div class="section-title">
+                    <i class="fas fa-user-tie"></i>
+                    Client Information
+                </div>
                 <div class="form-group">
-                    <label for="clientName">Client Name</label>
-                    <input type="text" id="clientName" placeholder="Client Company Name">
+                    <label for="clientName"><i class="fas fa-building"></i> Client Name</label>
+                    <input type="text" id="clientName" placeholder="Client Company Name" value="Global Enterprises Ltd.">
                 </div>
                 
                 <div class="form-group">
-                    <label for="clientAddress">Client Address</label>
-                    <textarea id="clientAddress" placeholder="456 Client Avenue&#10;City, State 67890&#10;Country"></textarea>
+                    <label for="clientAddress"><i class="fas fa-map-marked-alt"></i> Client Address</label>
+                    <textarea id="clientAddress" placeholder="456 Client Avenue&#10;City, State 67890&#10;Country">789 Corporate Blvd&#10;New York, NY 10001&#10;United States</textarea>
                 </div>
 
                 <div class="items-section">
-                    <div class="section-title">Invoice Items</div>
+                    <div class="section-title">
+                        <i class="fas fa-list"></i>
+                        Invoice Items
+                    </div>
                     <div id="itemsContainer">
                         <div class="item-row">
                             <div class="form-group">
-                                <label>Description</label>
-                                <input type="text" class="item-description" placeholder="Product/Service description">
+                                <label><i class="fas fa-tag"></i> Description</label>
+                                <input type="text" class="item-description" placeholder="Product/Service description" value="Website Design">
                             </div>
                             <div class="form-group">
-                                <label>Quantity</label>
+                                <label><i class="fas fa-cube"></i> Quantity</label>
                                 <input type="number" class="item-quantity" value="1" min="1">
                             </div>
                             <div class="form-group">
-                                <label>Rate</label>
-                                <input type="number" class="item-rate" step="0.01" placeholder="0.00">
+                                <label><i class="fas fa-dollar-sign"></i> Rate</label>
+                                <input type="number" class="item-rate" step="0.01" placeholder="0.00" value="1200.00">
                             </div>
                             <div class="form-group">
-                                <label>Amount</label>
+                                <label><i class="fas fa-calculator"></i> Amount</label>
                                 <input type="number" class="item-amount" step="0.01" readonly>
                             </div>
-                            <button type="button" class="remove-item-btn" onclick="removeItem(this)">×</button>
+                            <button type="button" class="remove-item-btn" onclick="removeItem(this)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="item-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-tag"></i> Description</label>
+                                <input type="text" class="item-description" placeholder="Product/Service description" value="Web Hosting (Annual)">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-cube"></i> Quantity</label>
+                                <input type="number" class="item-quantity" value="1" min="1">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-dollar-sign"></i> Rate</label>
+                                <input type="number" class="item-rate" step="0.01" placeholder="0.00" value="350.00">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-calculator"></i> Amount</label>
+                                <input type="number" class="item-amount" step="0.01" readonly>
+                            </div>
+                            <button type="button" class="remove-item-btn" onclick="removeItem(this)">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
                     </div>
-                    <button type="button" class="add-item-btn" onclick="addItem()">+ Add Item</button>
+                    <button type="button" class="add-item-btn" onclick="addItem()">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
                 </div>
 
-                <div class="form-row" style="margin-top: 1.25rem;">
+                <div class="form-row" style="margin-top: 1.5rem;">
                     <div class="form-group">
-                        <label for="taxRate">Tax Rate (%)</label>
-                        <input type="number" id="taxRate" step="0.01" value="0" min="0">
+                        <label for="taxRate"><i class="fas fa-percentage"></i> Tax Rate (%)</label>
+                        <input type="number" id="taxRate" step="0.01" value="8.25" min="0">
                     </div>
                     <div class="form-group">
-                        <label for="discount">Discount</label>
-                        <input type="number" id="discount" step="0.01" value="0" min="0">
+                        <label for="discount"><i class="fas fa-tag"></i> Discount</label>
+                        <input type="number" id="discount" step="0.01" value="100.00" min="0">
                     </div>
                 </div>
             </div>
@@ -722,7 +702,7 @@
                             <div class="invoice-title">INVOICE</div>
                         </div>
                         <div class="invoice-number">
-                            <p><strong>Invoice #:</strong> <span id="previewInvoiceNumber">INV-001</span></p>
+                            <p><strong>Invoice #:</strong> <span id="previewInvoiceNumber">INV-2023-087</span></p>
                             <p><strong>Date:</strong> <span id="previewInvoiceDate"></span></p>
                             <p><strong>Due Date:</strong> <span id="previewDueDate"></span></p>
                         </div>
@@ -730,17 +710,17 @@
                     
                     <div class="invoice-parties">
                         <div class="party-info">
-                            <h3>From:</h3>
-                            <p id="previewCompanyName">Your Company Name</p>
-                            <div id="previewCompanyAddress">123 Business Street<br>City, State 12345<br>Country</div>
-                            <p id="previewCompanyPhone">+1 (555) 123-4567</p>
-                            <p id="previewCompanyEmail">contact@company.com</p>
+                            <h3><i class="fas fa-building"></i> From:</h3>
+                            <p id="previewCompanyName">Tech Solutions Inc.</p>
+                            <div id="previewCompanyAddress">123 Innovation Drive<br>San Francisco, CA 94103<br>United States</div>
+                            <p id="previewCompanyPhone">+1 (415) 555-0199</p>
+                            <p id="previewCompanyEmail">info@techsolutions.com</p>
                         </div>
                         
                         <div class="party-info">
-                            <h3>To:</h3>
-                            <p id="previewClientName">Client Company Name</p>
-                            <div id="previewClientAddress">456 Client Avenue<br>City, State 67890<br>Country</div>
+                            <h3><i class="fas fa-user-tie"></i> To:</h3>
+                            <p id="previewClientName">Global Enterprises Ltd.</p>
+                            <div id="previewClientAddress">789 Corporate Blvd<br>New York, NY 10001<br>United States</div>
                         </div>
                     </div>
                     
@@ -756,10 +736,16 @@
                             </thead>
                             <tbody id="previewItemsTable">
                                 <tr>
-                                    <td>Sample Product/Service</td>
+                                    <td>Website Design</td>
                                     <td>1</td>
-                                    <td>$100.00</td>
-                                    <td>$100.00</td>
+                                    <td>$1200.00</td>
+                                    <td>$1200.00</td>
+                                </tr>
+                                <tr>
+                                    <td>Web Hosting (Annual)</td>
+                                    <td>1</td>
+                                    <td>$350.00</td>
+                                    <td>$350.00</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -768,29 +754,25 @@
                     <div class="invoice-totals">
                         <div class="total-row">
                             <span>Subtotal:</span>
-                            <span id="previewSubtotal">$100.00</span>
+                            <span id="previewSubtotal">$1550.00</span>
                         </div>
                         <div class="total-row">
                             <span>Discount:</span>
-                            <span id="previewDiscount">$0.00</span>
+                            <span id="previewDiscount">$100.00</span>
                         </div>
                         <div class="total-row">
-                            <span>Tax:</span>
-                            <span id="previewTax">$0.00</span>
+                            <span>Tax (8.25%):</span>
+                            <span id="previewTax">$119.63</span>
                         </div>
                         <div class="total-row">
                             <span>Total:</span>
-                            <span id="previewTotal">$100.00</span>
+                            <span id="previewTotal">$1569.63</span>
                         </div>
                     </div>
                 </div>
                 
                 <button class="download-btn" onclick="downloadPDF()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="7,10 12,15 17,10"/>
-                        <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
+                    <i class="fas fa-download"></i>
                     Download PDF
                 </button>
             </div>
@@ -809,6 +791,7 @@
             
             // Add event listeners for real-time updates
             addEventListeners();
+            updateItemAmounts();
             updatePreview();
         });
 
@@ -853,6 +836,15 @@
             const amount = quantity * rate;
             row.querySelector('.item-amount').value = amount.toFixed(2);
         }
+        
+        function updateItemAmounts() {
+            document.querySelectorAll('.item-row').forEach(row => {
+                const quantity = parseFloat(row.querySelector('.item-quantity').value) || 0;
+                const rate = parseFloat(row.querySelector('.item-rate').value) || 0;
+                const amount = quantity * rate;
+                row.querySelector('.item-amount').value = amount.toFixed(2);
+            });
+        }
 
         function addItem() {
             const container = document.getElementById('itemsContainer');
@@ -860,22 +852,24 @@
             newItem.className = 'item-row';
             newItem.innerHTML = `
                 <div class="form-group">
-                    <label>Description</label>
+                    <label><i class="fas fa-tag"></i> Description</label>
                     <input type="text" class="item-description" placeholder="Product/Service description">
                 </div>
                 <div class="form-group">
-                    <label>Quantity</label>
+                    <label><i class="fas fa-cube"></i> Quantity</label>
                     <input type="number" class="item-quantity" value="1" min="1">
                 </div>
                 <div class="form-group">
-                    <label>Rate</label>
+                    <label><i class="fas fa-dollar-sign"></i> Rate</label>
                     <input type="number" class="item-rate" step="0.01" placeholder="0.00">
                 </div>
                 <div class="form-group">
-                    <label>Amount</label>
+                    <label><i class="fas fa-calculator"></i> Amount</label>
                     <input type="number" class="item-amount" step="0.01" readonly>
                 </div>
-                <button type="button" class="remove-item-btn" onclick="removeItem(this)">×</button>
+                <button type="button" class="remove-item-btn" onclick="removeItem(this)">
+                    <i class="fas fa-times"></i>
+                </button>
             `;
             container.appendChild(newItem);
             addItemListeners();
@@ -896,7 +890,7 @@
             document.getElementById('previewCompanyName').textContent = 
                 document.getElementById('companyName').value || 'Your Company Name';
             document.getElementById('previewCompanyAddress').innerHTML = 
-                (document.getElementById('companyAddress').value || '123 Business Street\nCity, State 12345\nCountry').replace(/\n/g, '<br>');
+                (document.getElementById('companyAddress').value || '123 Business Street<br>City, State 12345<br>Country').replace(/\n/g, '<br>');
             document.getElementById('previewCompanyPhone').textContent = 
                 document.getElementById('companyPhone').value || '+1 (555) 123-4567';
             document.getElementById('previewCompanyEmail').textContent = 
@@ -926,7 +920,7 @@
             document.getElementById('previewClientName').textContent = 
                 document.getElementById('clientName').value || 'Client Company Name';
             document.getElementById('previewClientAddress').innerHTML = 
-                (document.getElementById('clientAddress').value || '456 Client Avenue\nCity, State 67890\nCountry').replace(/\n/g, '<br>');
+                (document.getElementById('clientAddress').value || '456 Client Avenue<br>City, State 67890<br>Country').replace(/\n/g, '<br>');
             
             // Update items table
             const itemsTable = document.getElementById('previewItemsTable');
@@ -973,6 +967,7 @@
             const invoice = document.getElementById('invoicePreview');
             
             try {
+                // Capture the invoice as an image
                 const canvas = await html2canvas(invoice, {
                     scale: 2,
                     useCORS: true,
@@ -981,27 +976,47 @@
                 });
                 
                 const imgData = canvas.toDataURL('image/png');
+                
+                // Create PDF with A4 dimensions (210mm x 297mm)
                 const pdf = new jsPDF('p', 'mm', 'a4');
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
                 
-                const imgWidth = 210;
-                const pageHeight = 295;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                let heightLeft = imgHeight;
+                // Calculate aspect ratio of the captured image
+                const imgWidth = canvas.width;
+                const imgHeight = canvas.height;
+                const ratio = imgWidth / imgHeight;
                 
-                let position = 0;
+                // Calculate dimensions to fit within the A4 page
+                let pdfWidth = pageWidth;
+                let pdfHeight = pageWidth / ratio;
                 
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
-                
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
+                // If the calculated height is greater than page height
+                if (pdfHeight > pageHeight) {
+                    pdfHeight = pageHeight;
+                    pdfWidth = pageHeight * ratio;
                 }
                 
+                // Center the content on the page
+                const x = (pageWidth - pdfWidth) / 2;
+                const y = (pageHeight - pdfHeight) / 2;
+                
+                // Add the image to the PDF
+                pdf.addImage(imgData, 'PNG', x, y, pdfWidth, pdfHeight);
+                
+                // Save the PDF
                 const invoiceNumber = document.getElementById('invoiceNumber').value || 'INV-001';
                 pdf.save(`invoice-${invoiceNumber}.pdf`);
+                
+                // Show confirmation
+                const btn = document.querySelector('.download-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> PDF Downloaded!';
+                btn.style.background = 'linear-gradient(to right, #27ae60, #2ecc71)';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = 'linear-gradient(to right, var(--primary), var(--dark))';
+                }, 2000);
             } catch (error) {
                 console.error('PDF generation failed:', error);
                 alert('Failed to generate PDF. Please try again.');
